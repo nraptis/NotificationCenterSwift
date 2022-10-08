@@ -18,6 +18,8 @@ struct NotificationBucketObjectKey: Hashable {
     let object: AnyHashable?
 }
 
+// An observer gets a collection of [object [selector]]
+// An object gets a collection of [selector]
 class NotificationBucketObjectNode {
     
     let object: AnyHashable?
@@ -89,16 +91,13 @@ private class NotificationBucket {
                     result.append(NotifyNode(observer: observer,
                                              object: object,
                                              selector: selector))
-                    
                 }
             }
         }
-        
         return result
     }
     
     func addObserver(_ observer: NSObject, selector: Selector, object: AnyHashable?) {
-        //let key = NotificationBucketObserverKey(observer: observer)
         if let node = observerDict[observer] {
             node.addObject(object: object, selector: selector)
         } else {
@@ -109,7 +108,6 @@ private class NotificationBucket {
     }
     
     func removeObserver(_ observer: NSObject, object: AnyHashable?) {
-        //let key = NotificationBucketObserverKey(observer: observer)
         if let bucket = observerDict[observer] {
             bucket.removeObject(object: object)
             if bucket.isEmpty() {
@@ -121,7 +119,6 @@ private class NotificationBucket {
     func isEmpty() -> Bool {
         return observerDict.count <= 0
     }
-    
 }
 
 // A key to access a dictionary by type: (NSNotification.Name, AnyHashable?)
@@ -130,11 +127,10 @@ private struct ObserverBucketNodeKey: Hashable {
     let object: AnyHashable?
 }
 
+// Root level node for observer-mapping. The selectors are not stored here.
 private struct ObserverBucketNode {
-    
     let name: NSNotification.Name
     let object: AnyHashable?
-    
     init(name: NSNotification.Name, object: AnyHashable?) {
         self.name = name
         self.object = object
